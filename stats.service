@@ -4,8 +4,8 @@ After=dev-i2c-1.device  # This waits for I2C device to be available
 After=multi-user.target
 After=network.target
 [Service]
-ExecStart=/usr/bin/python3 /home/mw/startup_ws/stats.py
-WorkingDirectory=/home/mw/startup_ws
+ExecStart=/usr/bin/python3 /home/mw/pioled_ws/stats.py
+WorkingDirectory=/home/mw/pioled_ws
 Environment="BLINKA_FORCEBOARD=JETSON_ORIN_NANO"
 StandardOutput=journal
 StandardError=journal
