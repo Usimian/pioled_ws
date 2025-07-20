@@ -1,0 +1,25 @@
+[Unit]
+Description=Run stats2.py at startup
+After=dev-i2c-1.device
+After=multi-user.target
+After=network.target
+After=graphical.target
+Wants=dev-i2c-1.device
+
+[Service]
+Type=simple
+User=mw
+Group=mw
+SupplementaryGroups=gpio i2c
+ExecStart=/home/mw/pioled_ws/stats2.py
+WorkingDirectory=/home/mw/pioled_ws
+Environment="BLINKA_FORCEBOARD=JETSON_ORIN_NANO"
+Environment=JETSON_MODEL_NAME=JETSON_ORIN_NANO
+Environment="HOME=/home/mw"
+Environment="USER=mw"
+StandardOutput=journal
+StandardError=journal
+Restart=no
+
+[Install]
+WantedBy=multi-user.target 

@@ -6,6 +6,20 @@
 # Adafruit Blinka to support CircuitPython libraries. CircuitPython does
 # not support PIL/pillow (python imaging library)!
 
+"""
+System Statistics Display Script
+
+This script continuously displays system statistics on a 128x32 OLED display (SSD1306).
+It monitors and shows:
+- IP address of the device
+- CPU load average
+- Memory usage with a progress bar showing used/total memory
+- Disk usage with a progress bar showing used/total disk space
+
+The display updates every second in an infinite loop, providing real-time
+system monitoring information on the OLED screen.
+"""
+
 import time
 import subprocess
 

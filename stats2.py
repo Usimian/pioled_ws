@@ -6,8 +6,25 @@
 # Adafruit Blinka to support CircuitPython libraries. CircuitPython does
 # not support PIL/pillow (python imaging library)!
 
+"""
+Robot System Statistics Display Script
+
+This script continuously displays system and robot statistics on a 128x32 OLED display (SSD1306).
+It monitors and shows:
+- IP address of the device
+- CPU load average
+- Battery voltage with a progress bar indicating charge level
+- Integrates with Rosmaster robot library for battery monitoring
+
+The display updates every second in an infinite loop, providing real-time
+system and robot status information on the OLED screen. This version is specifically
+designed for robotic applications using the Rosmaster library.
+"""
+
 import time
 import subprocess
+import signal
+import sys
 
 from board import SCL, SDA
 import busio
@@ -29,6 +46,16 @@ disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c)
 # Clear display.
 disp.fill(0)
 disp.show()
+
+# Signal handler to blank display on Ctrl+C
+def signal_handler(sig, frame):
+    print('\nBlanking display and exiting...')
+    disp.fill(0)
+    disp.show()
+    sys.exit(0)
+
+# Register the signal handler
+signal.signal(signal.SIGINT, signal_handler)
 
 # Create blank image for drawing.
 # Make sure to create image with mode '1' for 1-bit color.
@@ -54,6 +81,9 @@ font = ImageFont.load_default()
 # set progress bar width and height relative to board's display
 BAR_WIDTH = disp.width - 40
 BAR_HEIGHT = 16
+
+# Initialize alternating indicator for CPU load
+indicator_state = False
 
 # Alternatively load a TTF font.  Make sure the .ttf font file is in the
 # same directory as the python script!
@@ -84,7 +114,12 @@ while True:
     # Disk = subprocess.check_output(cmd, shell=True).decode("utf-8")
 
     draw.text((0, top + 0), "IP: " + IP, font=font, fill=255)
-    draw.text((0, top + 8), f"CPU load: {CPU} ", font=font, fill=255)
+    
+    # Toggle indicator state and create alternating indicator
+    indicator_state = not indicator_state
+    indicator = "-" if indicator_state else "|"
+    
+    draw.text((0, top + 8), f"CPU load: {CPU.strip()} {indicator}", font=font, fill=255)
     version = bot.get_version()
     draw.text((0, top + 16), "Batt:", font=font, fill=255)
     voltage = bot.get_battery_voltage()
@@ -94,4 +129,4 @@ while True:
 
     disp.image(image)
     disp.show()
-    time.sleep(1)
+    time.sleep(2)
