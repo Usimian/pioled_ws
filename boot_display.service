@@ -1,0 +1,21 @@
+[Unit]
+Description=Boot display on PiOLED
+After=dev-i2c-1.device network.target
+Wants=dev-i2c-1.device
+
+[Service]
+Type=oneshot
+User=mw
+Group=mw
+SupplementaryGroups=gpio i2c
+ExecStart=/home/mw/pioled_ws/boot_display.py
+WorkingDirectory=/home/mw/pioled_ws
+Environment="BLINKA_FORCEBOARD=JETSON_ORIN_NANO"
+Environment="JETSON_MODEL_NAME=JETSON_ORIN_NANO"
+Environment="HOME=/home/mw"
+Environment="USER=mw"
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
