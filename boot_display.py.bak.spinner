@@ -121,8 +121,6 @@ def get_voltage():
     return float(resp.voltage)
 
 # Wait for network on first boot (up to 30s)
-_spinner_frames = '|/-\\'
-_spinner_i = 0
 ip = 'no network'
 for _ in range(30):
     ip = subprocess.check_output("hostname -I | cut -d' ' -f1", shell=True).decode().strip()
@@ -137,10 +135,6 @@ while True:
 
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
     draw.text((0,  0), status,     font=font, fill=255)
-    # Heartbeat spinner — top-right corner, advances every 2s loop tick.
-    spin = _spinner_frames[_spinner_i % len(_spinner_frames)]
-    draw.text((width - 7, 0), spin, font=font, fill=255)
-    _spinner_i += 1
     draw.text((0, 11), f'IP: {ip}', font=font, fill=255)
     if voltage is None:
         draw.text((0, 22), '--.-V', font=font, fill=255)
